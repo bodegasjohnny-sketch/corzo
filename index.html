@@ -5,16 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Corzo · Medical Chronology Agent</title>
 <style>
-body{font-family:system-ui,sans-serif;background:#0f1115;color:#e8e6e3;margin:0;padding:2rem;line-height:1.5}
+body{font-family:system-ui,sans-serif;background:#0f1115;color:#e8e6e3;margin:0;padding:1rem;line-height:1.5}
 .wrap{max-width:1000px;margin:0 auto}
-h1{font-family:Space Grotesk,sans-serif;margin:0 0 .5rem}
-textarea{width:100%;min-height:180px;background:#16181d;color:#e8e6e3;border:1px solid #2a2e36;border-radius:8px;padding:.8rem;font-family:monospace;font-size:.85rem}
-button{background:#c8a96a;color:#111;border:none;padding:.55rem 1rem;border-radius:6px;font-weight:600;cursor:pointer;margin-right:.5rem}
+h1{font-family:system-ui,sans-serif;margin:0 0 .5rem;font-size:1.6rem}
+textarea{width:100%;min-height:160px;background:#16181d;color:#e8e6e3;border:1px solid #2a2e36;border-radius:8px;padding:.8rem;font-family:monospace;font-size:16px;box-sizing:border-box}
+.actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
+button{background:#c8a96a;color:#111;border:none;padding:.85rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:1rem;min-height:48px;-webkit-tap-highlight-color:transparent}
 button.secondary{background:transparent;color:#e8e6e3;border:1px solid #2a2e36}
 .card{background:#16181d;border:1px solid #2a2e36;border-radius:10px;padding:1rem;margin-top:1rem}
-table{width:100%;border-collapse:collapse;font-size:.82rem}
-th,td{text-align:left;padding:.4rem;border-bottom:1px solid #2a2e36}
-.flag{margin:.3rem 0;padding:.4rem .6rem;border-radius:6px}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th,td{text-align:left;padding:.4rem .3rem;border-bottom:1px solid #2a2e36;vertical-align:top}
+.flag{margin:.3rem 0;padding:.5rem .7rem;border-radius:6px}
 .flag.high{background:rgba(224,93,93,.12);border-left:3px solid #e05d5d}
 .flag.medium{background:rgba(212,160,23,.12);border-left:3px solid #d4a017}
 .flag.low{background:rgba(76,175,125,.1);border-left:3px solid #4caf7d}
@@ -25,7 +26,7 @@ th,td{text-align:left;padding:.4rem;border-bottom:1px solid #2a2e36}
 <h1>Corzo <span style="color:#9a958c;font-size:.9rem">Medical Chronology Agent</span></h1>
 <p style="color:#9a958c">Tool-using agent that turns raw medical records into a dated chronology, specials total, treatment gaps, and attorney red flags.</p>
 <textarea id="input"></textarea>
-<div style="margin:1rem 0">
+<div class="actions">
 <button id="run">Run Agent</button>
 <button class="secondary" id="load">Load Sample</button>
 <button class="secondary" id="dl">Download Report</button>
@@ -42,7 +43,7 @@ function detectGaps(events){const gaps=[];for(let i=1;i<events.length;i++){const
 function flagIssues(events,raw){const flags=[];if(/pre-existing|2019|prior/i.test(raw))flags.push({severity:"medium",category:"Pre-existing",description:"Prior lumbar strain (2019) mentioned."});const pains=events.map(e=>+e.pain).filter(n=>!isNaN(n));if(pains.length&&Math.max(...pains)>=7)flags.push({severity:"medium",category:"Pain",description:"High pain scores (max "+Math.max(...pains)+"/10)."});if(events.some(e=>/herniation/i.test(e.diagnosis)))flags.push({severity:"high",category:"Objective Findings",description:"MRI confirms disc herniation."});return flags;}
 function runAgent(raw){const events=extractEvents(raw);const gaps=detectGaps(events);const flags=flagIssues(events,raw);const total=events.reduce((s,e)=>s+e.billed,0);return{events,gaps,flags,total};}
 function render(r){document.getElementById("stats").innerHTML=`<strong>${r.events.length}</strong> events · <strong>$${r.total.toFixed(2)}</strong> specials · <strong>${r.gaps.length}</strong> gaps · <strong>${r.flags.length}</strong> flags`;const rows=r.events.map(e=>`<tr><td>${e.date}</td><td>${e.provider}</td><td>${e.type}</td><td>${e.diagnosis||"—"}</td><td>${e.pain||"—"}</td><td>$${e.billed.toFixed(2)}</td></tr>`).join("");document.getElementById("timeline").innerHTML=`<table><thead><tr><th>Date</th><th>Provider</th><th>Type</th><th>Finding</th><th>Pain</th><th>Billed</th></tr></thead><tbody>${rows||"<tr><td colspan=6>No events</td></tr>"}</tbody></table>`;document.getElementById("flags").innerHTML=r.flags.map(f=>`<div class="flag ${f.severity}"><strong>[${f.severity.toUpperCase()}] ${f.category}</strong><br>${f.description}</div>`).join("")||"<p style=color:#9a958c>No flags</p>";document.getElementById("gaps").innerHTML=r.gaps.map(g=>`<div>${g.days} days (${g.start} → ${g.end})</div>`).join("")||"None >30 days";const by={};r.events.forEach(e=>by[e.provider]=(by[e.provider]||0)+e.billed);document.getElementById("specials").innerHTML=Object.entries(by).map(([p,a])=>`<div>${p}: $${a.toFixed(2)}</div>`).join("");document.getElementById("log").textContent=`extract_events: ${r.events.length}\ndetect_gaps: ${r.gaps.length}\nflag_issues: ${r.flags.length}\ncalculate_specials: $${r.total.toFixed(2)}`;}
-document.getElementById("run").onclick=()=>{const raw=document.getElementById("input").value.trim();if(!raw)return alert("Paste records");render(runAgent(raw));};document.getElementById("load").onclick=()=>{document.getElementById("input").value=SAMPLE;render(runAgent(SAMPLE));};document.getElementById("dl").onclick=()=>{const raw=document.getElementById("input").value.trim();if(!raw)return;const r=runAgent(raw);let md=`# Chronology\n\nEvents: ${r.events.length}\nSpecials: $${r.total.toFixed(2)}\n\n| Date | Provider | Finding | Billed |\n|------|----------|---------|--------|\n`;r.events.forEach(e=>md+=`| ${e.date} | ${e.provider} | ${e.diagnosis||""} | $${e.billed} |\n`);const b=new Blob([md],{type:"text/markdown"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="chronology.md";a.click();};
+document.getElementById("run").addEventListener("click",()=>{const raw=document.getElementById("input").value.trim();if(!raw)return alert("Paste records first");render(runAgent(raw));});document.getElementById("load").addEventListener("click",()=>{document.getElementById("input").value=SAMPLE;render(runAgent(SAMPLE));});document.getElementById("dl").addEventListener("click",()=>{const raw=document.getElementById("input").value.trim();if(!raw)return;const r=runAgent(raw);let md=`# Chronology\n\nEvents: ${r.events.length}\nSpecials: $${r.total.toFixed(2)}\n\n| Date | Provider | Finding | Billed |\n|------|----------|---------|--------|\n`;r.events.forEach(e=>md+=`| ${e.date} | ${e.provider} | ${e.diagnosis||""} | $${e.billed} |\n`);const b=new Blob([md],{type:"text/markdown"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="chronology.md";a.click();});
 document.getElementById("input").value=SAMPLE;render(runAgent(SAMPLE));
 </script>
 </body>
