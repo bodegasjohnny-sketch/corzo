@@ -41,6 +41,8 @@ a{color:var(--accent)}
 .cta-box h2{margin-top:0;color:var(--accent)}
 .cta-box p{color:var(--muted);max-width:62ch;margin:0.6rem auto 1.2rem}
 .voice-box{min-height:180px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.8rem}
+.disclaimer{background:rgba(212,160,23,.08);border:1px solid rgba(212,160,23,.3);border-radius:8px;padding:.9rem 1rem;font-size:.88rem;color:var(--muted);margin-top:.8rem}
+.disclaimer strong{color:var(--warn)}
 </style>
 </head>
 <body>
@@ -84,9 +86,8 @@ a{color:var(--accent)}
 
   <h2>2. Live Voice Agent (ElevenLabs)</h2>
   <div class="card">
-    <p>Talk to the Corzo agent instead of typing. It walks the same 7 points, answers questions about gaps, truck cases, specials, and the chronology process, then hands off cleanly.</p>
+    <p>Talk to the Corzo agent instead of typing. It can walk the 7 points, discuss gaps, truck cases, specials, and the chronology process.</p>
     <div class="voice-box" id="voice-container">
-      <!-- ElevenLabs widget loads here once agent ID is set -->
       <div class="placeholder" id="voice-placeholder">
         <strong>Voice Agent Ready</strong><br>
         Drop your ElevenLabs agent ID below to activate the live widget.<br>
@@ -97,7 +98,9 @@ a{color:var(--accent)}
       <input id="agent-id-input" placeholder="Paste agent ID (agent_xxx...)" style="flex:1;min-width:200px"/>
       <button id="activate-voice">Activate Voice Agent</button>
     </div>
-    <p style="font-size:.85rem;color:var(--muted);margin-top:.5rem">Knowledge base: CCIA workflow, 7-step eval, chronology engine, red flags, Louisiana PI context, handoff process.</p>
+    <div class="disclaimer">
+      <strong>Disclaimer:</strong> What you get from this voice agent is limited to public knowledge we have about Corzo / CCIA. Answers may be incomplete or imprecise. To run this fully and accurately, the firm needs to provide an intake of internal knowledge (case handling rules, preferred language, constraints, escalation paths, and approved talking points). With that data and proper constraints in place, the agent can reply consistently and stay within the firm’s guidelines.
+    </div>
   </div>
 
   <h2>3. Automated Video Pipeline (Placeholders)</h2>
@@ -274,7 +277,6 @@ NURTURE: Automated sequence can start immediately (educational texts + case-eval
   document.getElementById("results").scrollIntoView({behavior:"smooth"});
 };
 
-// Chat agent
 const chatEl=document.getElementById("chat");
 function addMsg(text,who){
   const d=document.createElement("div");
@@ -301,13 +303,11 @@ document.getElementById("chat-send").onclick=()=>{
 };
 document.getElementById("chat-input").addEventListener("keypress",e=>{if(e.key==="Enter") document.getElementById("chat-send").click();});
 
-// ElevenLabs voice activation
 document.getElementById("activate-voice").onclick=()=>{
   const agentId=document.getElementById("agent-id-input").value.trim();
   if(!agentId){alert("Paste your ElevenLabs agent ID first.");return;}
   const container=document.getElementById("voice-container");
   container.innerHTML=`<elevenlabs-convai agent-id="${agentId}"></elevenlabs-convai>`;
-  // Script is already loaded globally
 };
 </script>
 </body>
