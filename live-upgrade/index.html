@@ -18,10 +18,9 @@ input,select,textarea{width:100%;background:#0c0e12;color:var(--text);border:1px
 textarea{min-height:80px;resize:vertical}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
 @media(max-width:640px){.row{grid-template-columns:1fr}}
-button{background:var(--accent);color:#111;border:none;padding:.7rem 1.1rem;border-radius:7px;font-weight:600;cursor:pointer;font-size:.95rem}
-button.secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
+button,.cta-btn{background:var(--accent);color:#111;border:none;padding:.7rem 1.1rem;border-radius:7px;font-weight:600;cursor:pointer;font-size:.95rem;text-decoration:none;display:inline-block}
+button.secondary,.cta-btn.secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
 .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
-.step-num{display:inline-flex;align-items:center;justify-content:center;width:1.5rem;height:1.5rem;background:var(--accent);color:#111;border-radius:50%;font-size:.8rem;font-weight:700;margin-right:.4rem}
 .flag{margin:.35rem 0;padding:.45rem .6rem;border-radius:6px;font-size:.85rem}
 .flag.high{background:rgba(224,93,93,.12);border-left:3px solid var(--danger)}
 .flag.medium{background:rgba(212,160,23,.12);border-left:3px solid var(--warn)}
@@ -38,6 +37,9 @@ th,td{text-align:left;padding:.35rem .3rem;border-bottom:1px solid var(--border)
 .msg.bot{background:#1c1f26}
 .moat{border-left:3px solid var(--accent);padding-left:.8rem}
 a{color:var(--accent)}
+.cta-box{background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:1.4rem 1.5rem;margin:2.5rem 0 1rem;text-align:center}
+.cta-box h2{margin-top:0;color:var(--accent)}
+.cta-box p{color:var(--muted);max-width:62ch;margin:0.6rem auto 1.2rem}
 </style>
 </head>
 <body>
@@ -135,7 +137,17 @@ a{color:var(--accent)}
     <p>Competitors can copy a form. They cannot easily copy the accumulating structured data + the agent that turns it into both better intake and consistent local content.</p>
   </div>
 
-  <p style="margin-top:2rem;color:var(--muted);font-size:.9rem">Built as a deployable work sample. Chronology engine is the same one running on the main Corzo page.</p>
+  <div class="cta-box">
+    <h2>I saw the Principal Applied AI Engineer posting</h2>
+    <p>I built this live demo and the chronology agent before sending an application. Want me to walk you through how these upgrades would actually run inside CCIA’s current workflow?</p>
+    <div class="actions" style="justify-content:center">
+      <a class="cta-btn" href="mailto:info@johnnybodegas.com?subject=Walkthrough%20of%20CCIA%20Upgrade%20Demo&body=Hi%2C%0A%0AI%20saw%20the%20live%20upgrade%20demo%20and%20would%20like%20to%20book%20a%20short%20call%20to%20go%20through%20the%207-step%2C%20chronology%20agent%2C%20handoff%2C%20and%20content%20pipeline.%0A%0AAvailable%20times%3A%0A%0AQuestions%3A%0A">Email me to book a call</a>
+      <a class="cta-btn secondary" href="mailto:info@johnnybodegas.com?subject=Questions%20about%20the%20CCIA%20Upgrade">Send questions or details</a>
+    </div>
+    <p style="font-size:.85rem;margin-top:.8rem">Or email directly: <a href="mailto:info@johnnybodegas.com">info@johnnybodegas.com</a><br>Replace the mailto links with your Google Calendar booking link when ready.</p>
+  </div>
+
+  <p style="margin-top:1.5rem;color:var(--muted);font-size:.9rem">Built as a deployable work sample. Chronology engine is the same one running on the main Corzo page.</p>
 </div>
 
 <script>
@@ -248,7 +260,6 @@ NURTURE: Automated sequence can start immediately (educational texts + case-eval
   document.getElementById("results").scrollIntoView({behavior:"smooth"});
 };
 
-// Chat agent
 const chatEl=document.getElementById("chat");
 function addMsg(text,who){
   const d=document.createElement("div");
