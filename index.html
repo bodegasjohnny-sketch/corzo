@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Corzo · Medical Chronology Agent</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#0f1115;color:#e8e6e3;margin:0;padding:2rem;line-height:1.5}
+.wrap{max-width:1000px;margin:0 auto}
+h1{font-family:Space Grotesk,sans-serif;margin:0 0 .5rem}
+textarea{width:100%;min-height:180px;background:#16181d;color:#e8e6e3;border:1px solid #2a2e36;border-radius:8px;padding:.8rem;font-family:monospace;font-size:.85rem}
+button{background:#c8a96a;color:#111;border:none;padding:.55rem 1rem;border-radius:6px;font-weight:600;cursor:pointer;margin-right:.5rem}
+button.secondary{background:transparent;color:#e8e6e3;border:1px solid #2a2e36}
+.card{background:#16181d;border:1px solid #2a2e36;border-radius:10px;padding:1rem;margin-top:1rem}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+th,td{text-align:left;padding:.4rem;border-bottom:1px solid #2a2e36}
+.flag{margin:.3rem 0;padding:.4rem .6rem;border-radius:6px}
+.flag.high{background:rgba(224,93,93,.12);border-left:3px solid #e05d5d}
+.flag.medium{background:rgba(212,160,23,.12);border-left:3px solid #d4a017}
+.flag.low{background:rgba(76,175,125,.1);border-left:3px solid #4caf7d}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Corzo <span style="color:#9a958c;font-size:.9rem">Medical Chronology Agent</span></h1>
+<p style="color:#9a958c">Tool-using agent that turns raw medical records into a dated chronology, specials total, treatment gaps, and attorney red flags.</p>
+<textarea id="input"></textarea>
+<div style="margin:1rem 0">
+<button id="run">Run Agent</button>
+<button class="secondary" id="load">Load Sample</button>
+<button class="secondary" id="dl">Download Report</button>
+</div>
+<div class="card"><h2>Chronology</h2><div id="stats"></div><div id="timeline"></div></div>
+<div class="card"><h2>Red Flags</h2><div id="flags"></div></div>
+<div class="card"><h2>Gaps & Specials</h2><div id="gaps"></div><div id="specials"></div></div>
+<div class="card"><h2>Agent Log</h2><pre id="log" style="white-space:pre-wrap;font-size:.78rem"></pre></div>
+</div>
+<script>
+const SAMPLE=`=== EMERGENCY DEPARTMENT - 2026-01-15 ===\nProvider: Our Lady of the Lake ER\nDiagnosis: Cervical strain, lumbar strain.\nTreatment: Ibuprofen, muscle relaxant.\nBilled: $1,850.00\n\n=== FOLLOW-UP - 2026-01-22 ===\nProvider: Dr. Smith, Orthopedics\nImpression: Cervical radiculopathy, possible disc herniation.\nPain score 7/10\nPlan: MRI ordered. Physical therapy referral.\nBilled: $425.00\n\n=== MRI CERVICAL SPINE - 2026-02-05 ===\nProvider: Imaging Center of Louisiana\nImpression: C5-C6 disc herniation with moderate right foraminal stenosis.\nBilled: $1,200.00\n\n=== PHYSICAL THERAPY - 2026-02-10 ===\nProvider: Baton Rouge PT\nPain score 6/10\nBilled: $185.00\n\n=== PHYSICAL THERAPY - 2026-02-17 ===\nProvider: Baton Rouge PT\nPain score 5/10\nBilled: $185.00\n\n=== ORTHOPEDIC FOLLOW-UP - 2026-04-12 ===\nProvider: Dr. Smith\nPain score 6/10\nPlan: Continue PT, consider epidural.\nBilled: $350.00\n\n=== PHYSICAL THERAPY - 2026-04-19 ===\nProvider: Baton Rouge PT\nPain score 4/10\nBilled: $185.00\n\n=== CHIROPRACTIC - 2026-05-03 ===\nProvider: Active Chiropractic\nTreatment: Spinal manipulation.\nBilled: $95.00\n\n2019: Patient treated for mild lumbar strain.`;
+function extractEvents(raw){const events=[];const sections=raw.split(/\n===+\s*/);for(const section of sections){const s=section.trim();if(!s)continue;const dm=s.match(/(\d{4}-\d{2}-\d{2})/);if(!dm)continue;const date=dm[1];const provider=(s.match(/Provider:\s*(.+)/i)||[])[1]?.trim()||"Unknown";const diagnosis=(s.match(/(?:Diagnosis|Impression):\s*(.+)/i)||[])[1]?.trim()||"";const treatment=(s.match(/(?:Treatment|Plan):\s*(.+)/i)||[])[1]?.trim()||"";const pain=(s.match(/Pain score\s*(\d+)\/10/i)||[])[1]||"";const bm=s.match(/Billed:\s*\$?([\d,]+\.?\d*)/);const billed=bm?parseFloat(bm[1].replace(/,/g,"")):0;if(!diagnosis&&!treatment&&billed===0&&!pain)continue;let type="Visit";if(/MRI|Imaging/i.test(s))type="Imaging";else if(/PT|Physical/i.test(s))type="PT";else if(/ER|Emergency/i.test(s))type="ER";else if(/Chiro/i.test(s))type="Chiropractic";events.push({date,provider,type,diagnosis,treatment,pain,billed});}const seen=new Set();return events.filter(e=>{const k=e.date+"|"+e.provider;if(seen.has(k))return false;seen.add(k);return true;}).sort((a,b)=>a.date.localeCompare(b.date));}
+function detectGaps(events){const gaps=[];for(let i=1;i<events.length;i++){const days=Math.round((new Date(events[i].date)-new Date(events[i-1].date))/86400000);if(days>30)gaps.push({start:events[i-1].date,end:events[i].date,days});}return gaps;}
+function flagIssues(events,raw){const flags=[];if(/pre-existing|2019|prior/i.test(raw))flags.push({severity:"medium",category:"Pre-existing",description:"Prior lumbar strain (2019) mentioned."});const pains=events.map(e=>+e.pain).filter(n=>!isNaN(n));if(pains.length&&Math.max(...pains)>=7)flags.push({severity:"medium",category:"Pain",description:"High pain scores (max "+Math.max(...pains)+"/10)."});if(events.some(e=>/herniation/i.test(e.diagnosis)))flags.push({severity:"high",category:"Objective Findings",description:"MRI confirms disc herniation."});return flags;}
+function runAgent(raw){const events=extractEvents(raw);const gaps=detectGaps(events);const flags=flagIssues(events,raw);const total=events.reduce((s,e)=>s+e.billed,0);return{events,gaps,flags,total};}
+function render(r){document.getElementById("stats").innerHTML=`<strong>${r.events.length}</strong> events · <strong>$${r.total.toFixed(2)}</strong> specials · <strong>${r.gaps.length}</strong> gaps · <strong>${r.flags.length}</strong> flags`;const rows=r.events.map(e=>`<tr><td>${e.date}</td><td>${e.provider}</td><td>${e.type}</td><td>${e.diagnosis||"—"}</td><td>${e.pain||"—"}</td><td>$${e.billed.toFixed(2)}</td></tr>`).join("");document.getElementById("timeline").innerHTML=`<table><thead><tr><th>Date</th><th>Provider</th><th>Type</th><th>Finding</th><th>Pain</th><th>Billed</th></tr></thead><tbody>${rows||"<tr><td colspan=6>No events</td></tr>"}</tbody></table>`;document.getElementById("flags").innerHTML=r.flags.map(f=>`<div class="flag ${f.severity}"><strong>[${f.severity.toUpperCase()}] ${f.category}</strong><br>${f.description}</div>`).join("")||"<p style=color:#9a958c>No flags</p>";document.getElementById("gaps").innerHTML=r.gaps.map(g=>`<div>${g.days} days (${g.start} → ${g.end})</div>`).join("")||"None >30 days";const by={};r.events.forEach(e=>by[e.provider]=(by[e.provider]||0)+e.billed);document.getElementById("specials").innerHTML=Object.entries(by).map(([p,a])=>`<div>${p}: $${a.toFixed(2)}</div>`).join("");document.getElementById("log").textContent=`extract_events: ${r.events.length}\ndetect_gaps: ${r.gaps.length}\nflag_issues: ${r.flags.length}\ncalculate_specials: $${r.total.toFixed(2)}`;}
+document.getElementById("run").onclick=()=>{const raw=document.getElementById("input").value.trim();if(!raw)return alert("Paste records");render(runAgent(raw));};document.getElementById("load").onclick=()=>{document.getElementById("input").value=SAMPLE;render(runAgent(SAMPLE));};document.getElementById("dl").onclick=()=>{const raw=document.getElementById("input").value.trim();if(!raw)return;const r=runAgent(raw);let md=`# Chronology\n\nEvents: ${r.events.length}\nSpecials: $${r.total.toFixed(2)}\n\n| Date | Provider | Finding | Billed |\n|------|----------|---------|--------|\n`;r.events.forEach(e=>md+=`| ${e.date} | ${e.provider} | ${e.diagnosis||""} | $${e.billed} |\n`);const b=new Blob([md],{type:"text/markdown"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="chronology.md";a.click();};
+document.getElementById("input").value=SAMPLE;render(runAgent(SAMPLE));
+</script>
+</body>
+</html>
