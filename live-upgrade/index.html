@@ -40,12 +40,13 @@ a{color:var(--accent)}
 .cta-box{background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:1.4rem 1.5rem;margin:2.5rem 0 1rem;text-align:center}
 .cta-box h2{margin-top:0;color:var(--accent)}
 .cta-box p{color:var(--muted);max-width:62ch;margin:0.6rem auto 1.2rem}
+.voice-box{min-height:180px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.8rem}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Live Upgrade Demo</h1>
-  <p class="lede">Proposed upgrade for CCIA — already built and ready to deploy. Test the 7-step, chronology, handoff, and chat agent live. Video pipeline sections are placeholders.</p>
+  <p class="lede">Proposed upgrade for CCIA — already built and ready to deploy. Test the 7-step, chronology, handoff, and voice agent live. Video pipeline sections are placeholders.</p>
 
   <h2>1. Upgraded 7-Step Case Evaluation (Live)</h2>
   <div class="card" id="eval">
@@ -81,10 +82,22 @@ a{color:var(--accent)}
     </div>
   </div>
 
-  <h2>2. Voice Agent Placeholder</h2>
+  <h2>2. Live Voice Agent (ElevenLabs)</h2>
   <div class="card">
-    <p>Voice agent walks the same 7 points conversationally (phone or in-browser). Outputs the identical structured object.</p>
-    <div class="placeholder">Voice agent demo — audio interface coming. Same data contract as the form above.</div>
+    <p>Talk to the Corzo agent instead of typing. It walks the same 7 points, answers questions about gaps, truck cases, specials, and the chronology process, then hands off cleanly.</p>
+    <div class="voice-box" id="voice-container">
+      <!-- ElevenLabs widget loads here once agent ID is set -->
+      <div class="placeholder" id="voice-placeholder">
+        <strong>Voice Agent Ready</strong><br>
+        Drop your ElevenLabs agent ID below to activate the live widget.<br>
+        <small>Agent must be public with authentication disabled.</small>
+      </div>
+    </div>
+    <div style="margin-top:.8rem;display:flex;gap:.5rem;flex-wrap:wrap">
+      <input id="agent-id-input" placeholder="Paste agent ID (agent_xxx...)" style="flex:1;min-width:200px"/>
+      <button id="activate-voice">Activate Voice Agent</button>
+    </div>
+    <p style="font-size:.85rem;color:var(--muted);margin-top:.5rem">Knowledge base: CCIA workflow, 7-step eval, chronology engine, red flags, Louisiana PI context, handoff process.</p>
   </div>
 
   <h2>3. Automated Video Pipeline (Placeholders)</h2>
@@ -150,6 +163,7 @@ a{color:var(--accent)}
   <p style="margin-top:1.5rem;color:var(--muted);font-size:.9rem">Built as a deployable work sample. Chronology engine is the same one running on the main Corzo page.</p>
 </div>
 
+<script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
 <script>
 const DEMO = {
   s1: "Rear-end collision – 2026-01-14",
@@ -260,6 +274,7 @@ NURTURE: Automated sequence can start immediately (educational texts + case-eval
   document.getElementById("results").scrollIntoView({behavior:"smooth"});
 };
 
+// Chat agent
 const chatEl=document.getElementById("chat");
 function addMsg(text,who){
   const d=document.createElement("div");
@@ -285,6 +300,15 @@ document.getElementById("chat-send").onclick=()=>{
   },600);
 };
 document.getElementById("chat-input").addEventListener("keypress",e=>{if(e.key==="Enter") document.getElementById("chat-send").click();});
+
+// ElevenLabs voice activation
+document.getElementById("activate-voice").onclick=()=>{
+  const agentId=document.getElementById("agent-id-input").value.trim();
+  if(!agentId){alert("Paste your ElevenLabs agent ID first.");return;}
+  const container=document.getElementById("voice-container");
+  container.innerHTML=`<elevenlabs-convai agent-id="${agentId}"></elevenlabs-convai>`;
+  // Script is already loaded globally
+};
 </script>
 </body>
 </html>
