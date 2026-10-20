@@ -17,7 +17,6 @@ textarea{width:100%;min-height:140px;background:#16181d;color:#e8e6e3;border:1px
 .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
 button{background:#c8a96a;color:#111;border:none;padding:.85rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:1rem;min-height:48px}
 button.secondary{background:transparent;color:#e8e6e3;border:1px solid #2a2e36}
-button.danger{background:#3a2222;color:#f0b0b0;border:1px solid #5a3030}
 .card{background:#16181d;border:1px solid #2a2e36;border-radius:10px;padding:1rem;margin-top:1rem}
 table{width:100%;border-collapse:collapse;font-size:.78rem}
 th,td{text-align:left;padding:.35rem .25rem;border-bottom:1px solid #2a2e36;vertical-align:top}
@@ -137,7 +136,7 @@ function runAgent(raw){
 function render(r){
   document.getElementById("stats").innerHTML=`<strong>${r.events.length}</strong> events · <strong>$${r.total.toFixed(2)}</strong> specials · <strong>${r.gaps.length}</strong> gaps · <strong>${r.flags.length}</strong> flags`;
   const rows=r.events.map(e=>`<tr><td>${e.date}</td><td>${e.provider}</td><td>${e.type}</td><td>${e.diagnosis||"—"}</td><td>${e.pain||"—"}</td><td>$${e.billed.toFixed(2)}</td></tr>`).join("");
-  document.getElementById("timeline").innerHTML=`<table><thead><tr><th>Date</th><th>Provider</th><th>Type</th><th>Finding</th><th>Pain</th><th>Billed</th></tr></thead><tbody>${rows||"<tr><td colspan=6>No events extracted. Try clearer records or paste structured text.</td></tr>"}</tbody></table>`;
+  document.getElementById("timeline").innerHTML=`<table><thead><tr><th>Date</th><th>Provider</th><th>Type</th><th>Finding</th><th>Pain</th><th>Billed</th></tr></thead><tbody>${rows||"<tr><td colspan=6>No events extracted.</td></tr>"}</tbody></table>`;
   document.getElementById("flags").innerHTML=r.flags.map(f=>`<div class="flag ${f.severity}"><strong>[${f.severity.toUpperCase()}] ${f.category}</strong><br>${f.description}</div>`).join("")||"<p style=color:#9a958c>No flags</p>";
   document.getElementById("gaps").innerHTML=r.gaps.map(g=>`<div>${g.days} days (${g.start} → ${g.end})</div>`).join("")||"None >30 days";
   const by={}; r.events.forEach(e=>by[e.provider]=(by[e.provider]||0)+e.billed);
@@ -154,7 +153,34 @@ function clearResults(){
   document.getElementById("log").textContent="";
 }
 
-// File handling
+function buildReport(raw){
+  const r = runAgent(raw);
+  let md = `# Medical Chronology Report\n\n**Events:** ${r.events.length}\n**Specials:** $${r.total.toFixed(2)}\n**Gaps:** ${r.gaps.length}\n**Flags:** ${r.flags.length}\n\n## Timeline\n\n| Date | Provider | Type | Finding | Pain | Billed |\n|------|----------|------|---------|------|--------|\n`;
+  r.events.forEach(e => {
+    md += `| ${e.date} | ${e.provider} | ${e.type} | ${(e.diagnosis||"").replace(/\|/g,"/")} | ${e.pain||""} | $${e.billed.toFixed(2)} |\n`;
+  });
+  md += `\n## Gaps\n${r.gaps.map(g => `- ${g.days} days (${g.start} → ${g.end})`).join("\n") || "- None"}\n\n## Flags\n${r.flags.map(f => `- **[${f.severity.toUpperCase()}] ${f.category}**: ${f.description}`).join("\n") || "- None"}\n`;
+  return md;
+}
+
+function downloadReport(){
+  const raw = document.getElementById("input").value.trim();
+  if (!raw) { setStatus("Nothing to download. Paste text or load sample first."); return; }
+  const md = buildReport(raw);
+  const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "chronology-report.md";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 100);
+  setStatus("Report download started.");
+}
+
 const drop=document.getElementById("drop");
 const fileInput=document.getElementById("file");
 drop.addEventListener("click",()=>fileInput.click());
@@ -201,21 +227,8 @@ document.getElementById("sample").addEventListener("click",()=>{
   setStatus("Sample case loaded.");
 });
 
-document.getElementById("dl").addEventListener("click",()=>{
-  const raw=document.getElementById("input").value.trim();
-  if(!raw) return;
-  const r=runAgent(raw);
-  let md=`# Medical Chronology\n\nEvents: ${r.events.length}\nSpecials: $${r.total.toFixed(2)}\n\n| Date | Provider | Type | Finding | Billed |\n|------|----------|------|---------|--------|\n`;
-  r.events.forEach(e=>md+=`| ${e.date} | ${e.provider} | ${e.type} | ${e.diagnosis||""} | $${e.billed} |\n`);
-  md+=`\n## Gaps\n${r.gaps.map(g=>`- ${g.days} days (${g.start} → ${g.end})`).join("\n")||"- None"}\n\n## Flags\n${r.flags.map(f=>`- [${f.severity}] ${f.category}: ${f.description}`).join("\n")||"- None"}\n`;
-  const b=new Blob([md],{type:"text/markdown"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(b);
-  a.download="chronology.md";
-  a.click();
-});
+document.getElementById("dl").addEventListener("click", downloadReport);
 
-// Start empty so user can test from scratch
 clearResults();
 setStatus("Ready. Upload a PDF or paste text, then tap Run Agent.");
 </script>
