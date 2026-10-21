@@ -1,1 +1,57 @@
-HERO_VIDEO_UPDATED
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Live Upgrade Demo · Corzo for CCIA</title>
+<style>
+:root{--bg:#0f1115;--surface:#16181d;--border:#2a2e36;--text:#e8e6e3;--muted:#9a958c;--accent:#c8a96a;--ok:#4caf7d;--warn:#d4a017;--danger:#e05d5d}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+.wrap{max-width:980px;margin:0 auto;padding:1.5rem 1.1rem 4rem}
+h1{font-size:1.75rem;margin:0 0 .3rem}
+.lede{color:var(--muted);margin:0 0 1.5rem}
+h2{font-size:1.2rem;margin:2.2rem 0 .7rem;color:var(--accent)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem;margin:1rem 0}
+.hero-video{padding:0;overflow:hidden;margin-bottom:1.5rem}
+.hero-video iframe{width:100%;height:480px;border:0;border-radius:10px;display:block}
+.hero-video p{padding:.6rem 1rem;margin:0;font-size:.85rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Live Upgrade Demo</h1>
+  <p class="lede">Operational layer for CCIA — intake, constrained voice, document pipeline, content engine, and nurture. Testable end-to-end.</p>
+
+  <div class="card hero-video">
+    <iframe src="https://drive.google.com/file/d/1Hcp9xTfcTyZb-Lmr2Im7dtJh8KvwPEtc/preview" allow="autoplay"></iframe>
+    <p>Hero overview of the operational upgrade — intake, voice, chronology, content engine, and nurture.</p>
+  </div>
+
+  <h2>1. Intake + Handoff System</h2>
+  <div class="card" id="eval">
+    <p>Collects structured lead data, runs chronology, and produces a ready-to-send handoff package.</p>
+    <div class="row">
+      <div><label>Full name</label><input id="name" placeholder="John D. Doe"/></div>
+      <div><label>Phone</label><input id="phone" placeholder="(225) 555-0199"/></div>
+    </div>
+    <div class="row">
+      <div><label>1. Accident type & date</label><input id="s1" placeholder="Rear-end – 2026-01-14"/></div>
+      <div><label>2. Vehicle type</label><select id="s2"><option>Car</option><option>Commercial truck / 18-wheeler</option><option>Motorcycle</option><option>Other</option></select></div>
+    </div>
+    <label>3. Injuries & treatment so far</label><textarea id="s3" placeholder="ER, MRI, PT, surgery..."></textarea>
+    <div class="row">
+      <div><label>4. Current pain (0-10)</label><input id="s4" type="number" min="0" max="10" placeholder="7"/></div>
+      <div><label>5. Fault indicators</label><input id="s5" placeholder="Police report, citation"/></div>
+    </div>
+    <label>6. Insurance / commercial</label><input id="s6" placeholder="Commercial policy + UM"/>
+    <label>Records text (optional)</label><textarea id="records" placeholder="Paste medical record excerpt for chronology"></textarea>
+    <div class="actions">
+      <button id="run-eval">Qualify, Chronology & Handoff</button>
+      <button class="secondary" id="load-demo">Load Demo Case</button>
+    </div>
+  </div>
+</div>
+<script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+</body>
+</html>
