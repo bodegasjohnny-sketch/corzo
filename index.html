@@ -30,16 +30,24 @@ nav a{color:#e8eef5;text-decoration:none;padding:.4rem .7rem;border-radius:6px}
 nav a:first-child{color:#c41e3a;font-weight:700}
 nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}nav.tabs a{color:#e8eef5;text-decoration:none;padding:.4rem .7rem;border-radius:6px}nav.tabs a.active{background:#c41e3a;color:#fff;font-weight:700}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/corzo.css">
 </head>
 <body>
 <nav class="tabs">
+  <span class="logo"><i></i><span>Corzo × Johnny Bodegas</span></span>
   <a href="/" class="active">Chronology</a>
   <a href="/live-upgrade/">Live Upgrade</a>
   <a href="/overall-upgrade/">Overall Upgrade</a>
   <a href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener" style="color:#8b9bb4;margin-left:auto">Portfolio</a>
 </nav>
+<header class="hero"><div class="orb o1"></div><div class="orb o2"></div><div class="gridbg"></div><div class="in">
+  <span class="pill reveal"><b></b>Live demo · Medical chronology agent</span>
+  <h1 class="reveal d1">Medical records in. <span class="grad">Case-ready chronology</span> out.</h1>
+  <p class="sub reveal d2">Upload a PDF or load the sample. The agent extracts events, detects treatment gaps, flags red issues, and totals specials — for attorney review, never a valuation.</p>
+  <div class="cta reveal d3"><a class="btn pri" href="https://calendar.app.google/VPPcBakyackf3NNN9" target="_blank" rel="noopener">Book a call →</a><a class="btn" href="mailto:info@johnnybodegas.com">Email me</a><a class="btn" href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener">Portfolio</a></div>
+</div></header>
 <div class="wrap">
-<h1>Corzo <span style="color:#8b9bb4;font-size:.9rem">Medical Chronology Agent</span></h1>
 <p class="lede">Upload a PDF or paste text. The agent extracts events, detects gaps, flags issues, and calculates specials.</p>
 <div class="drop" id="drop">
   <strong>Drop PDF here or tap to upload</strong><br>
@@ -219,5 +227,6 @@ document.getElementById("dl").addEventListener("click", downloadReport);
 clearResults();
 setStatus("Ready. Upload a PDF or paste text, then tap Run Agent.");
 </script>
+<footer class="site"><span>Johnny Bodegas · Applied AI demo for Chris Corzo Injury Attorneys</span><span><a href="https://calendar.app.google/VPPcBakyackf3NNN9" target="_blank" rel="noopener">Book a call</a> · <a href="mailto:info@johnnybodegas.com">info@johnnybodegas.com</a> · <a href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener">Portfolio</a></span></footer>
 </body>
 </html>

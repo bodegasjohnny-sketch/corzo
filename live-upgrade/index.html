@@ -51,16 +51,24 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
 .hero-video{padding:0;overflow:hidden}.hero-video iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:10px;display:block}
 .chrono-frame{width:100%;height:900px;border:1px solid var(--border);border-radius:10px;background:var(--bg)}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/corzo.css">
 </head>
 <body>
 <nav class="tabs">
+  <span class="logo"><i></i><span>Corzo × Johnny Bodegas</span></span>
   <a href="/">Chronology</a>
   <a href="/live-upgrade/" class="active">Live Upgrade</a>
   <a href="/overall-upgrade/">Overall Upgrade</a>
   <a href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener" style="color:#8b9bb4;margin-left:auto">Portfolio</a>
 </nav>
+<header class="hero"><div class="orb o1"></div><div class="orb o2"></div><div class="gridbg"></div><div class="in">
+  <span class="pill reveal"><b></b>Live demo · End-to-end operating layer</span>
+  <h1 class="reveal d1">The Call Corzo <span class="grad">operating upgrade</span>, running live.</h1>
+  <p class="sub reveal d2">Intake + handoff, a knowledge-constrained voice agent, document chronology, content engine, nurture and chat — testable end-to-end.</p>
+  <div class="cta reveal d3"><a class="btn pri" href="https://calendar.app.google/VPPcBakyackf3NNN9" target="_blank" rel="noopener">Book a call →</a><a class="btn" href="mailto:info@johnnybodegas.com">Email me</a><a class="btn" href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener">Portfolio</a></div>
+</div></header>
 <div class="wrap">
-  <h1>Live Upgrade Demo</h1>
   <!-- HERO VIDEO: to swap to YouTube, set HERO_VIDEO_SRC below to https://www.youtube.com/embed/VIDEO_ID -->
   <div class="card hero-video"><iframe id="hero-video" title="Corzo upgrade walkthrough" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe></div>
   <script>const HERO_VIDEO_SRC="https://drive.google.com/file/d/1Hcp9xTfcTyZb-Lmr2Im7dtJh8KvwPEtc/preview";document.getElementById("hero-video").src=HERO_VIDEO_SRC;</script>
@@ -348,5 +356,6 @@ document.getElementById("chat-send").onclick=()=>{
 };
 document.getElementById("chat-input").addEventListener("keypress",e=>{if(e.key==="Enter") document.getElementById("chat-send").click();});
 </script>
+<footer class="site"><span>Johnny Bodegas · Applied AI demo for Chris Corzo Injury Attorneys</span><span><a href="https://calendar.app.google/VPPcBakyackf3NNN9" target="_blank" rel="noopener">Book a call</a> · <a href="mailto:info@johnnybodegas.com">info@johnnybodegas.com</a> · <a href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener">Portfolio</a></span></footer>
 </body>
 </html>
