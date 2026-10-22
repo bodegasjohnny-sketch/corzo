@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
   const list = await lr.json();
   let n = 0;
   for (const c of list?.conversations ?? []) {
-    if (c.status !== "done" || (c.start_time_unix_secs ?? 0) < cutoff) continue;
+    if (c.status !== "done" || (c.start_time_unix_secs ?? 0) < cutoff || (c.message_count ?? 0) < 2) continue; // skip empty connects
     const { data: ex } = await sb.from("corzo_calls").select("conversation_id").eq("conversation_id", c.conversation_id).maybeSingle();
     if (ex) continue;
     const full = await (await fetch(`${XI}/conversations/${c.conversation_id}`, { headers: { "xi-api-key": key } })).json();

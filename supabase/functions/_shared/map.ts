@@ -1,5 +1,8 @@
 // Maps an ElevenLabs conversation (GET /v1/convai/conversations/{id} or post_call_transcription webhook `data`) to a corzo_calls row.
 // Public table: phone numbers are masked to last 4 digits BEFORE storage, and long digit runs in the transcript are masked too.
+const W = "(?:zero|oh|one|two|three|four|five|six|seven|eight|nine)";
+const wordRun = new RegExp(`\\b${W}(?:[\\s,.-]+${W}){6,}\\b`, "gi");
+const maskWords = (s: string) => s.replace(wordRun, "[number withheld]");
 export const AGENT_ID = "agent_8401m5bvzmy6escbffygpnekg7mt";
 const maskDigits = (s: string) => s.replace(/(\+?\d[\d\s().-]{5,}\d)/g, (m) => { const d = m.replace(/\D/g, ""); return d.length >= 7 ? "•••-" + d.slice(-4) : m; });
 export function toRow(c: any) {
@@ -7,7 +10,7 @@ export function toRow(c: any) {
   const fields: Record<string, unknown> = {};
   for (const [k, v] of Object.entries<any>(dc)) fields[k] = v?.value ?? null;
   if (fields.phone) { const d = String(fields.phone).replace(/\D/g, ""); fields.phone = d.length >= 4 ? "•••-•••-" + d.slice(-4) : "(given)"; }
-  const transcript = (c?.transcript ?? []).filter((t: any) => t?.message).map((t: any) => ({ role: t.role, t: t.time_in_call_secs ?? null, message: maskDigits(String(t.message)) }));
+  const transcript = (c?.transcript ?? []).filter((t: any) => t?.message).map((t: any) => ({ role: t.role, t: t.time_in_call_secs ?? null, message: maskWords(maskDigits(String(t.message))) }));
   const md = c?.metadata ?? {};
   return {
     conversation_id: c.conversation_id,
