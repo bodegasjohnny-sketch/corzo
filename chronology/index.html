@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Corzo · Medical Chronology Agent</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+body{font-family:system-ui,sans-serif;background:#0a1628;color:#e8eef5;margin:0;padding:1rem;line-height:1.5}
+.wrap{max-width:1000px;margin:0 auto}
+h1{margin:0 0 .4rem;font-size:1.6rem}
+.lede{color:#8b9bb4;margin:0 0 1rem}
+.drop{border:2px dashed #1e3a5f;border-radius:10px;padding:1.2rem;text-align:center;background:#12233f;margin-bottom:1rem;cursor:pointer}
+.drop.drag{border-color:#c41e3a;background:#1c1f26}
+.drop input{display:none}
+textarea{width:100%;min-height:140px;background:#12233f;color:#e8eef5;border:1px solid #1e3a5f;border-radius:8px;padding:.8rem;font-family:monospace;font-size:15px;box-sizing:border-box}
+.actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
+button{background:#c41e3a;color:#fff;border:none;padding:.85rem 1.2rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:1rem;min-height:48px}
+button.secondary{background:transparent;color:#e8eef5;border:1px solid #1e3a5f}
+.card{background:#12233f;border:1px solid #1e3a5f;border-radius:10px;padding:1rem;margin-top:1rem}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+th,td{text-align:left;padding:.35rem .25rem;border-bottom:1px solid #1e3a5f;vertical-align:top}
+.flag{margin:.3rem 0;padding:.5rem .7rem;border-radius:6px}
+.flag.high{background:rgba(224,93,93,.12);border-left:3px solid #e05d5d}
+.flag.medium{background:rgba(212,160,23,.12);border-left:3px solid #d4a017}
+.flag.low{background:rgba(76,175,125,.1);border-left:3px solid #4caf7d}
+.status{font-size:.85rem;color:#8b9bb4;margin-top:.4rem}
+nav{background:#0c0e12;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+nav a{color:#e8eef5;text-decoration:none;padding:.4rem .7rem;border-radius:6px}
+nav a:first-child{color:#c41e3a;font-weight:700}
+nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}nav.tabs a{color:#e8eef5;text-decoration:none;padding:.4rem .7rem;border-radius:6px}nav.tabs a.active{background:#c41e3a;color:#fff;font-weight:700}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/corzo.css">
+<script>if(window.self!==window.top)document.documentElement.classList.add("embedded");</script>
+</head>
+<body>
+<nav class="tabs">
+  <a class="logo" href="/" style="padding:0!important;color:#fff!important"><i></i><span>Corzo × Johnny Bodegas</span></a>
+  <a href="/">Home</a>
+  <a href="/chronology/" class="active">Chronology</a>
+  <a href="/live-upgrade/">Live Upgrade</a>
+  <a href="/overall-upgrade/">Overall Upgrade</a>
+  <a href="/calls/">Call Log</a>
+  <a href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener" class="nav-portfolio">Portfolio</a>
+</nav>
+<header class="hero"><div class="orb o1"></div><div class="orb o2"></div><div class="gridbg"></div><div class="in">
+  <span class="pill reveal"><b></b>Live demo · Medical chronology agent</span>
+  <h1 class="reveal d1">Medical records in. <span class="grad">Case-ready chronology</span> out.</h1>
+  <p class="sub reveal d2">Upload a PDF or load the sample. The agent extracts events, detects treatment gaps, flags red issues, and totals specials — for attorney review, never a valuation.</p>
+  <div class="cta reveal d3"><a class="btn pri" href="https://calendar.app.google/VPPcBakyackf3NNN9" target="_blank" rel="noopener">Book a call →</a><a class="btn" href="mailto:info@johnnybodegas.com">Email me</a><a class="btn" href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener">Portfolio</a></div>
+  <div class="hero-vid reveal d3"><video controls playsinline preload="metadata" poster="/assets/corzo-hero.jpg"><source src="/assets/corzo-hero.mp4" type="video/mp4"></video></div>
+</div></header>
+<div class="wrap">
+<p class="lede">Upload a PDF or paste text. The agent extracts events, detects gaps, flags issues, and calculates specials.</p>
+<div class="drop" id="drop">
+  <strong>Drop PDF here or tap to upload</strong><br>
+  <span style="color:#8b9bb4;font-size:.85rem">PDF text will be extracted in your browser</span>
+  <input type="file" id="file" accept="application/pdf,.pdf"/>
+</div>
+<div class="status" id="status"></div>
+<textarea id="input" placeholder="Or paste medical record text here..."></textarea>
+<div class="actions">
+  <button id="run">Run Agent</button>
+  <button class="secondary" id="clear">Start from Scratch</button>
+  <button class="secondary" id="sample">Load Sample</button>
+  <button class="secondary" id="dl">Download Report</button>
+</div>
+<div class="card"><h2>Chronology</h2><div id="stats"></div><div id="timeline"></div></div>
+<div class="card"><h2>Red Flags</h2><div id="flags"></div></div>
+<div class="card"><h2>Gaps & Specials</h2><div id="gaps"></div><div id="specials"></div></div>
+<div class="card"><h2>Agent Log</h2><pre id="log" style="white-space:pre-wrap;font-size:.78rem"></pre></div>
+</div>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+const SAMPLE = `=== EMERGENCY DEPARTMENT - 2026-01-15 ===\nProvider: Our Lady of the Lake ER\nDiagnosis: Cervical strain, lumbar strain.\nTreatment: Ibuprofen, muscle relaxant.\nBilled: $1,850.00\n\n=== FOLLOW-UP - 2026-01-22 ===\nProvider: Dr. Smith, Orthopedics\nImpression: Cervical radiculopathy, possible disc herniation.\nPain score 7/10\nPlan: MRI ordered. Physical therapy referral.\nBilled: $425.00\n\n=== MRI CERVICAL SPINE - 2026-02-05 ===\nProvider: Imaging Center of Louisiana\nImpression: C5-C6 disc herniation with moderate right foraminal stenosis.\nBilled: $1,200.00\n\n=== PHYSICAL THERAPY - 2026-02-10 ===\nProvider: Baton Rouge PT\nPain score 6/10\nBilled: $185.00\n\n=== PHYSICAL THERAPY - 2026-02-17 ===\nProvider: Baton Rouge PT\nPain score 5/10\nBilled: $185.00\n\n=== ORTHOPEDIC FOLLOW-UP - 2026-04-12 ===\nProvider: Dr. Smith\nPain score 6/10\nPlan: Continue PT, consider epidural.\nBilled: $350.00\n\n=== PHYSICAL THERAPY - 2026-04-19 ===\nProvider: Baton Rouge PT\nPain score 4/10\nBilled: $185.00\n\n=== CHIROPRACTIC - 2026-05-03 ===\nProvider: Active Chiropractic\nTreatment: Spinal manipulation.\nBilled: $95.00\n\n2019: Patient treated for mild lumbar strain.`;
+function setStatus(msg){document.getElementById("status").textContent = msg || "";}
+async function extractPdfText(file){
+  setStatus("Reading PDF...");
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({data: buf}).promise;
+  let text = "";
+  for(let i=1;i<=pdf.numPages;i++){
+    setStatus(`Extracting page ${i} of ${pdf.numPages}...`);
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map(it => it.str).join(" ") + "\n\n";
+  }
+  return text.trim();
+}
+function extractEvents(raw){
+  const events=[];
+  const sections=raw.split(/\n===+\s*|\n\n+/);
+  for(const section of sections){
+    const s=section.trim();
+    if(!s) continue;
+    const dm=s.match(/(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{2,4}|\d{1,2}-\d{1,2}-\d{2,4})/);
+    if(!dm) continue;
+    let date=dm[1];
+    if(date.includes("/")){
+      const p=date.split("/");
+      if(p[2].length===2) p[2]="20"+p[2];
+      date=`${p[2]}-${p[0].padStart(2,"0")}-${p[1].padStart(2,"0")}`;
+    }
+    const provider=(s.match(/Provider:\s*(.+)/i)||[])[1]?.trim()||"Unknown";
+    const diagnosis=(s.match(/(?:Diagnosis|Impression|Findings):\s*(.+)/i)||[])[1]?.trim()||"";
+    const treatment=(s.match(/(?:Treatment|Plan):\s*(.+)/i)||[])[1]?.trim()||"";
+    const pain=(s.match(/Pain score\s*(\d+)\/10/i)||[])[1]||"";
+    const bm=s.match(/Billed:\s*\$?([\d,]+\.?\d*)/);
+    const billed=bm?parseFloat(bm[1].replace(/,/g,"")):0;
+    if(!diagnosis && !treatment && billed===0 && !pain && s.length<40) continue;
+    let type="Visit";
+    if(/MRI|Imaging|CT|X-ray/i.test(s)) type="Imaging";
+    else if(/PT|Physical Therapy/i.test(s)) type="PT";
+    else if(/ER|Emergency|ED\b/i.test(s)) type="ER";
+    else if(/Chiro/i.test(s)) type="Chiropractic";
+    events.push({date,provider,type,diagnosis,treatment,pain,billed});
+  }
+  const seen=new Set();
+  return events.filter(e=>{const k=e.date+"|"+e.provider;if(seen.has(k))return false;seen.add(k);return true;}).sort((a,b)=>a.date.localeCompare(b.date));
+}
+function detectGaps(events){
+  const gaps=[];
+  for(let i=1;i<events.length;i++){
+    const days=Math.round((new Date(events[i].date)-new Date(events[i-1].date))/86400000);
+    if(days>30) gaps.push({start:events[i-1].date,end:events[i].date,days});
+  }
+  return gaps;
+}
+function flagIssues(events,raw){
+  const flags=[];
+  if(/pre-existing|2019|prior|history of/i.test(raw)) flags.push({severity:"medium",category:"Pre-existing",description:"Prior condition mentioned. Verify relation to current injury."});
+  const pains=events.map(e=>+e.pain).filter(n=>!isNaN(n));
+  if(pains.length && Math.max(...pains)>=7) flags.push({severity:"medium",category:"Pain",description:"High pain scores (max "+Math.max(...pains)+"/10)."});
+  if(events.some(e=>/herniation|fracture|tear|stenosis/i.test(e.diagnosis))) flags.push({severity:"high",category:"Objective Findings",description:"Objective imaging findings present."});
+  return flags;
+}
+function runAgent(raw){
+  const events=extractEvents(raw);
+  const gaps=detectGaps(events);
+  const flags=flagIssues(events,raw);
+  const total=events.reduce((s,e)=>s+e.billed,0);
+  return {events,gaps,flags,total};
+}
+function render(r){
+  document.getElementById("stats").innerHTML=`<strong>${r.events.length}</strong> events · <strong>$${r.total.toFixed(2)}</strong> specials · <strong>${r.gaps.length}</strong> gaps · <strong>${r.flags.length}</strong> flags`;
+  const rows=r.events.map(e=>`<tr><td>${e.date}</td><td>${e.provider}</td><td>${e.type}</td><td>${e.diagnosis||"—"}</td><td>${e.pain||"—"}</td><td>$${e.billed.toFixed(2)}</td></tr>`).join("");
+  document.getElementById("timeline").innerHTML=`<table><thead><tr><th>Date</th><th>Provider</th><th>Type</th><th>Finding</th><th>Pain</th><th>Billed</th></tr></thead><tbody>${rows||"<tr><td colspan=6>No events extracted.</td></tr>"}</tbody></table>`;
+  document.getElementById("flags").innerHTML=r.flags.map(f=>`<div class="flag ${f.severity}"><strong>[${f.severity.toUpperCase()}] ${f.category}</strong><br>${f.description}</div>`).join("")||"<p style=color:#8b9bb4>No flags</p>";
+  document.getElementById("gaps").innerHTML=r.gaps.map(g=>`<div>${g.days} days (${g.start} → ${g.end})</div>`).join("")||"None >30 days";
+  const by={}; r.events.forEach(e=>by[e.provider]=(by[e.provider]||0)+e.billed);
+  document.getElementById("specials").innerHTML=Object.entries(by).map(([p,a])=>`<div>${p}: $${a.toFixed(2)}</div>`).join("")||"";
+  document.getElementById("log").textContent=`extract_events: ${r.events.length}\ndetect_gaps: ${r.gaps.length}\nflag_issues: ${r.flags.length}\ncalculate_specials: $${r.total.toFixed(2)}`;
+}
+function clearResults(){
+  document.getElementById("stats").innerHTML="";
+  document.getElementById("timeline").innerHTML="";
+  document.getElementById("flags").innerHTML="";
+  document.getElementById("gaps").innerHTML="";
+  document.getElementById("specials").innerHTML="";
+  document.getElementById("log").textContent="";
+}
+function buildReport(raw){
+  const r = runAgent(raw);
+  let md = `# Medical Chronology Report\n\n**Events:** ${r.events.length}\n**Specials:** $${r.total.toFixed(2)}\n**Gaps:** ${r.gaps.length}\n**Flags:** ${r.flags.length}\n\n## Timeline\n\n| Date | Provider | Type | Finding | Pain | Billed |\n|------|----------|------|---------|------|--------|\n`;
+  r.events.forEach(e => {
+    md += `| ${e.date} | ${e.provider} | ${e.type} | ${(e.diagnosis||"").replace(/\|/g,"/")} | ${e.pain||""} | $${e.billed.toFixed(2)} |\n`;
+  });
+  md += `\n## Gaps\n${r.gaps.map(g => `- ${g.days} days (${g.start} → ${g.end})`).join("\n") || "- None"}\n\n## Flags\n${r.flags.map(f => `- **[${f.severity.toUpperCase()}] ${f.category}**: ${f.description}`).join("\n") || "- None"}\n`;
+  return md;
+}
+function downloadReport(){
+  const raw = document.getElementById("input").value.trim();
+  if (!raw) { setStatus("Nothing to download. Paste text or load sample first."); return; }
+  const md = buildReport(raw);
+  const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "chronology-report.md";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 100);
+  setStatus("Report download started.");
+}
+const drop=document.getElementById("drop");
+const fileInput=document.getElementById("file");
+drop.addEventListener("click",()=>fileInput.click());
+drop.addEventListener("dragover",e=>{e.preventDefault();drop.classList.add("drag");});
+drop.addEventListener("dragleave",()=>drop.classList.remove("drag"));
+drop.addEventListener("drop",async e=>{
+  e.preventDefault(); drop.classList.remove("drag");
+  const f=e.dataTransfer.files[0];
+  if(f) await handleFile(f);
+});
+fileInput.addEventListener("change",async e=>{
+  const f=e.target.files[0];
+  if(f) await handleFile(f);
+});
+async function handleFile(file){
+  if(!file.name.toLowerCase().endsWith(".pdf")){ setStatus("Please upload a PDF."); return; }
+  try{
+    const text=await extractPdfText(file);
+    document.getElementById("input").value=text;
+    setStatus(`Extracted ${text.length} characters from ${file.name}`);
+    render(runAgent(text));
+  }catch(err){
+    setStatus("Could not read PDF: "+err.message);
+  }
+}
+document.getElementById("run").addEventListener("click",()=>{
+  const raw=document.getElementById("input").value.trim();
+  if(!raw){ alert("Paste text or upload a PDF first."); return; }
+  render(runAgent(raw));
+  setStatus("Agent finished.");
+});
+document.getElementById("clear").addEventListener("click",()=>{
+  document.getElementById("input").value="";
+  clearResults();
+  setStatus("Cleared. Paste text or upload a PDF to start from scratch.");
+});
+document.getElementById("sample").addEventListener("click",()=>{
+  document.getElementById("input").value=SAMPLE;
+  render(runAgent(SAMPLE));
+  setStatus("Sample case loaded.");
+});
+document.getElementById("dl").addEventListener("click", downloadReport);
+clearResults();
+setStatus("Ready. Upload a PDF or paste text, then tap Run Agent.");
+</script>
+<footer class="site"><span>Johnny Bodegas · Applied AI demo for Chris Corzo Injury Attorneys</span><span><a href="https://calendar.app.google/VPPcBakyackf3NNN9" target="_blank" rel="noopener">Book a call</a> · <a href="mailto:info@johnnybodegas.com">info@johnnybodegas.com</a> · <a href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener">Portfolio</a></span></footer>
+</body>
+</html>

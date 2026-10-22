@@ -56,8 +56,9 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
 </head>
 <body>
 <nav class="tabs">
-  <span class="logo"><i></i><span>Corzo × Johnny Bodegas</span></span>
-  <a href="/">Chronology</a>
+  <a class="logo" href="/" style="padding:0!important;color:#fff!important"><i></i><span>Corzo × Johnny Bodegas</span></a>
+  <a href="/">Home</a>
+  <a href="/chronology/">Chronology</a>
   <a href="/live-upgrade/" class="active">Live Upgrade</a>
   <a href="/overall-upgrade/">Overall Upgrade</a>
   <a href="/calls/">Call Log</a>
@@ -73,7 +74,7 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
 <div class="wrap">
     <p class="lede">Operational layer for CCIA — intake, constrained voice, document pipeline, content engine, and nurture. Testable end-to-end.</p>
 
-  <h2>1. Intake + Handoff System</h2>
+  <h2 id="intake">1. Intake + Handoff System</h2>
   <div class="card" id="eval">
     <p>Collects structured lead data, runs chronology, and produces a ready-to-send handoff package.</p>
     <div class="row">
@@ -129,15 +130,15 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
     </div>
   </div>
 
-  <h2>3. Document Chronology Pipeline</h2>
-  <iframe class="chrono-frame" src="/" title="Medical chronology agent"></iframe>
+  <h2 id="chronology">3. Document Chronology Pipeline</h2>
+  <iframe class="chrono-frame" src="/chronology/" title="Medical chronology agent"></iframe>
   <div class="card">
     <p>Same engine as the main page. Upload or paste records → structured chronology + flags + specials → handoff.</p>
-    <p><a href="/" target="_blank">Open full chronology agent →</a> (PDF upload, sample, download report)</p>
+    <p><a href="/chronology/" target="_blank">Open full chronology agent →</a> (PDF upload, sample, download report)</p>
     <div class="placeholder">In production: secure upload, multi-file support, review queue for staff, audit log.</div>
   </div>
 
-  <h2>4. Content Engine (PAS / Hormozi-style)</h2>
+  <h2 id="content">4. Content Engine (PAS / Hormozi-style)</h2>
   <div class="card">
     <p>Generate short-form scripts from case patterns. Each ends with a CTA to the 7-step or voice.</p>
     <div class="actions">
@@ -146,7 +147,7 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
     <div id="scripts-out"></div>
   </div>
 
-  <h2>5. Nurture Layer</h2>
+  <h2 id="nurture">5. Nurture Layer</h2>
   <div class="card">
     <p>Automated follow-up while the human decides. Sequence based on lead status.</p>
     <div class="actions">
@@ -155,7 +156,7 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
     <div id="nurture-out"></div>
   </div>
 
-  <h2>6. 24/7 Social / Chat Agent</h2>
+  <h2 id="chat">6. 24/7 Social / Chat Agent</h2>
   <div class="card">
     <div class="chat" id="chat"></div>
     <div style="display:flex;gap:.5rem">
@@ -165,7 +166,7 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
     <p style="font-size:.85rem;color:var(--muted);margin-top:.5rem">In production this answers Facebook/Instagram DMs and routes qualified leads.</p>
   </div>
 
-  <h2>Automation Workflow</h2>
+  <h2 id="workflow">Automation Workflow</h2>
   <div class="card">
     <div class="workflow">
       <div class="wf-step">Content created</div><div class="arrow">→</div>
