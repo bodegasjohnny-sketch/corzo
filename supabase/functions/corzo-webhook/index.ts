@@ -8,7 +8,8 @@ async function hmac(secret: string, msg: string) {
 }
 Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("method", { status: 405 });
-  const secret = Deno.env.get("ELEVENLABS_WEBHOOK_SECRET");
+  const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  const secret = Deno.env.get("ELEVENLABS_WEBHOOK_SECRET") ?? (await sb.rpc("corzo_get_secret", { p_name: "ELEVENLABS_WEBHOOK_SECRET" })).data;
   if (!secret) return new Response("webhook secret not configured", { status: 503 });
   const body = await req.text();
   const sig = req.headers.get("elevenlabs-signature") ?? "";
@@ -16,7 +17,6 @@ Deno.serve(async (req) => {
   if (!ts || !v0 || Math.abs(Date.now() / 1000 - Number(ts)) > 1800 || (await hmac(secret, `${ts}.${body}`)) !== v0) return new Response("bad signature", { status: 401 });
   const evt = JSON.parse(body);
   if (evt?.type !== "post_call_transcription" || evt?.data?.agent_id !== AGENT_ID) return new Response("ignored", { status: 200 });
-  const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
   const { error } = await sb.from("corzo_calls").upsert({ ...toRow(evt.data), has_audio: true });
   return new Response(error ? error.message : "ok", { status: error ? 500 : 200 });
 });
