@@ -25,6 +25,13 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
 .mrow>div{padding:14px 20px}.mrow>div:first-child{background:#0f1f38;color:#f4f6fa}.mrow>div:last-child{color:#9aa8bf}.mrow a{color:#ff6b80;font-weight:700;text-decoration:none}
 .mrow.h>div{font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:#9aa8bf;background:#12233f}
 @media(max-width:620px){.mrow{grid-template-columns:1fr}}
+.film-row{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:22px;align-items:start;margin-top:22px;max-width:1140px}
+.film-row .hero-vid{margin-top:0;max-width:none}
+.phone{margin:0}.phone-frame{border-radius:34px;padding:10px;background:linear-gradient(160deg,#1e3a5f,#081222);border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 70px -30px rgba(196,30,58,.6)}
+.phone-frame video{display:block;width:100%;aspect-ratio:9/16;border-radius:26px;background:#000;object-fit:cover}
+.phone figcaption,.approach-vid figcaption{color:#9aa8bf;font-size:13.5px;margin-top:10px}.phone figcaption b{color:#fff}
+.approach-vid{margin:26px 0 0}.approach-vid .hero-vid{max-width:none}
+@media(max-width:860px){.film-row{grid-template-columns:1fr}.phone{max-width:300px;margin:0 auto}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/corzo.css">
@@ -45,7 +52,11 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
   <p class="sub reveal d2">From the first call to a case-ready file: a voice agent that captures intake, a structured handoff to the team, medical chronologies with gap and red-flag detection, and content plus nurture that keep leads warm. Every piece below is working and testable now, with human review built in. It doesn't give case valuations.</p>
   <div class="cta reveal d3"><a class="btn pri" href="https://calendar.app.google/VPPcBakyackf3NNN9" target="_blank" rel="noopener">Book a call →</a><a class="btn" href="mailto:info@johnnybodegas.com">Email me</a><a class="btn" href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener">Portfolio</a></div>
   <div class="vid-head reveal d3"><span class="pill"><b></b>Made for Call Corzo</span><h2>A 60-second film I made for <span class="grad">you</span></h2><p>A concept ad built with my AI video pipeline. It opens on the moment life changes, then shows how a faster, smarter intake meets that person right away.</p></div>
-  <div class="hero-vid reveal d3"><video controls playsinline preload="metadata" poster="/assets/corzo-hero.jpg"><source src="/assets/corzo-hero.mp4" type="video/mp4"></video></div>
+  <div class="film-row reveal d3">
+    <div class="hero-vid"><video controls playsinline preload="metadata" poster="/assets/corzo-hero.jpg"><source src="/assets/corzo-hero.mp4" type="video/mp4"></video></div>
+    <figure class="phone"><div class="phone-frame"><video controls playsinline preload="metadata" poster="/assets/corzo-vertical.jpg"><source src="/assets/corzo-vertical.mp4" type="video/mp4"></video></div>
+      <figcaption><b>Vertical version</b>, cut for Reels, TikTok and Shorts: a 60-second 9:16 walkthrough of the build.</figcaption></figure>
+  </div>
 </div></header>
 <section class="wrap" id="approach" style="padding-bottom:0!important">
   <div class="eyebrow">How I approached this</div>
@@ -64,6 +75,8 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
       <li>Phone numbers masked in the public log; API keys stay on the server</li>
       <li>Post-call checks: name and phone collected first, and no valuation given</li></ul></div>
   </div>
+  <figure class="approach-vid"><div class="hero-vid" style="margin-top:0"><video controls playsinline preload="metadata" poster="/assets/corzo-approach.jpg"><source src="/assets/corzo-approach.mp4" type="video/mp4"></video></div>
+    <figcaption>A 60-second walkthrough: where the intake funnel leaks (the 7-question form gives the visitor nothing back), then the medical chronology flagging treatment gaps, and how intake, chronology and evaluation connect into one loop, end to end.</figcaption></figure>
   <div class="map">
     <div class="mrow h"><div>Pain point</div><div>What I built</div></div>
     <div class="mrow"><div>Intake depends on people; after-hours lag</div><div><a href="/live-upgrade/#voice">Voice Intake Agent</a> + <a href="/calls/">Call Log &amp; Handoff</a></div></div>
