@@ -16,6 +16,15 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
 .svc .go{margin-top:8px;color:#ff6b80;font-weight:700;text-decoration:none}.svc .go:hover{color:#fff}
 .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:18px;color:#9aa8bf;font-size:14px}
 .flow span.s{padding:7px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.09);background:#0f1f38;color:#f4f6fa}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:26px}
+@media(max-width:960px){.steps{grid-template-columns:1fr 1fr}}@media(max-width:620px){.steps{grid-template-columns:1fr}}
+.steps .card{margin:0;position:relative}.steps .n{font-size:44px;font-weight:850;letter-spacing:-.05em;line-height:1;background:linear-gradient(90deg,#c41e3a,#ff4d66);-webkit-background-clip:text;background-clip:text;color:transparent}
+.steps h3{margin:10px 0 6px;font-size:18px;color:#fff}.steps p,.steps li{color:#9aa8bf;font-size:14.5px}.steps ul{padding-left:18px;margin:6px 0 0}.steps li{margin:4px 0}
+.map{margin-top:22px;border:1px solid rgba(255,255,255,.09);border-radius:20px;overflow:hidden}
+.mrow{display:grid;grid-template-columns:1.3fr 1fr;border-top:1px solid rgba(255,255,255,.09)}.mrow:first-child{border-top:0}
+.mrow>div{padding:14px 20px}.mrow>div:first-child{background:#0f1f38;color:#f4f6fa}.mrow>div:last-child{color:#9aa8bf}.mrow a{color:#ff6b80;font-weight:700;text-decoration:none}
+.mrow.h>div{font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:#9aa8bf;background:#12233f}
+@media(max-width:620px){.mrow{grid-template-columns:1fr}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/corzo.css">
@@ -37,6 +46,32 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
   <div class="cta reveal d3"><a class="btn pri" href="https://calendar.app.google/VPPcBakyackf3NNN9" target="_blank" rel="noopener">Book a call →</a><a class="btn" href="mailto:info@johnnybodegas.com">Email me</a><a class="btn" href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener">Portfolio</a></div>
   <div class="hero-vid reveal d3"><video controls playsinline preload="metadata" poster="/assets/corzo-hero.jpg"><source src="/assets/corzo-hero.mp4" type="video/mp4"></video></div>
 </div></header>
+<section class="wrap" id="approach" style="padding-bottom:0!important">
+  <div class="eyebrow">How I approached this</div>
+  <h2 style="margin-top:0!important">Research → pain points → priorities → <span class="grad">guarded builds</span></h2>
+  <div class="steps">
+    <div class="card"><div class="n">01</div><h3>Research</h3><p>I studied CCIA's public site and intake path: who it serves (people hurt in car and truck wrecks around Baton Rouge and Gonzales), the 24/7 positioning, and the 7-question online case evaluation. I also read the role's brief: discover, prioritize, deliver and protect.</p></div>
+    <div class="card"><div class="n">02</div><h3>Pain points</h3><ul>
+      <li>The 7-question case evaluation is pure lead capture. The visitor gets nothing back.</li>
+      <li>No document intelligence. Medical records and crash reports still need manual review after the lead comes in.</li>
+      <li>Intake depends on people, so after-hours and busy periods create lag.</li>
+      <li>Social content is manual and inconsistent, with no loop from qualification to analysis to content to the next lead.</li></ul></div>
+    <div class="card"><div class="n">03</div><h3>Prioritize</h3><p>I built the highest-leverage fixes first: capturing intake fast, including after hours; medical records review; a clean handoff to the team; and follow-up. Each pain point maps to one working tool (below).</p></div>
+    <div class="card"><div class="n">04</div><h3>Build with guardrails</h3><ul>
+      <li>Working, testable demos rather than slides</li>
+      <li>No case valuations, legal advice or invented firm rules</li>
+      <li>Phone numbers masked in the public log; API keys stay on the server</li>
+      <li>Post-call checks: name and phone collected first, and no valuation given</li></ul></div>
+  </div>
+  <div class="map">
+    <div class="mrow h"><div>Pain point</div><div>What I built</div></div>
+    <div class="mrow"><div>Intake depends on people; after-hours lag</div><div><a href="/live-upgrade/#voice">Voice Intake Agent</a> + <a href="/calls/">Call Log &amp; Handoff</a></div></div>
+    <div class="mrow"><div>Case evaluation gives the visitor nothing back</div><div><a href="/live-upgrade/#intake">Structured Intake + Handoff</a></div></div>
+    <div class="mrow"><div>Manual review of medical records</div><div><a href="/chronology/">Medical Chronology Agent</a></div></div>
+    <div class="mrow"><div>Manual, inconsistent content; no follow-up loop</div><div><a href="/live-upgrade/#content">Content Engine</a> + <a href="/live-upgrade/#nurture">Nurture Sequences</a></div></div>
+  </div>
+  <p style="margin-top:18px"><a href="/overall-upgrade/" style="color:#ff6b80;font-weight:700;text-decoration:none">Full breakdown on the Overall Upgrade page →</a></p>
+</section>
 <div class="wrap">
   <div class="eyebrow">What's built</div>
   <h2 style="margin-top:0!important">One service per bottleneck. All live.</h2>
