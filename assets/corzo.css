@@ -57,3 +57,4 @@ nav.tabs a.nav-portfolio:hover{color:#fff!important;background:linear-gradient(#
 @keyframes ledspin{to{--angle:360deg}}
 @keyframes ledglow{0%,100%{box-shadow:0 0 8px 1px rgba(196,30,58,.55),0 0 18px 2px rgba(255,77,102,.25)}50%{box-shadow:0 0 14px 3px rgba(255,77,102,.75),0 0 30px 6px rgba(196,30,58,.4)}}
 @media(prefers-reduced-motion:reduce){nav.tabs a.nav-portfolio{animation:none!important;box-shadow:0 0 12px 2px rgba(196,30,58,.6)}}
+@media(max-width:700px){nav.tabs{height:auto!important;min-height:56px;flex-wrap:wrap!important;overflow:visible!important;padding:10px 12px!important;row-gap:8px}nav.tabs a{padding:6px 10px!important;font-size:13px}nav.tabs a.nav-portfolio{padding:6px 14px!important}}
