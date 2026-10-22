@@ -47,3 +47,4 @@ footer.site a{color:var(--muted);text-decoration:none}footer.site a:hover{color:
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 .hero-vid{margin-top:44px;border-radius:22px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px rgba(196,30,58,.55);background:#000;max-width:980px}
 .hero-vid video{display:block;width:100%;height:auto;aspect-ratio:16/9}
+.embedded nav.tabs,.embedded .hero,.embedded footer.site{display:none!important}.embedded .wrap{padding-top:16px!important}
