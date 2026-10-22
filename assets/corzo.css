@@ -58,3 +58,7 @@ nav.tabs a.nav-portfolio:hover{color:#fff!important;background:linear-gradient(#
 @keyframes ledglow{0%,100%{box-shadow:0 0 8px 1px rgba(196,30,58,.55),0 0 18px 2px rgba(255,77,102,.25)}50%{box-shadow:0 0 14px 3px rgba(255,77,102,.75),0 0 30px 6px rgba(196,30,58,.4)}}
 @media(prefers-reduced-motion:reduce){nav.tabs a.nav-portfolio{animation:none!important;box-shadow:0 0 12px 2px rgba(196,30,58,.6)}}
 @media(max-width:700px){nav.tabs{height:auto!important;min-height:56px;flex-wrap:wrap!important;overflow:visible!important;padding:10px 12px!important;row-gap:8px}nav.tabs a{padding:6px 10px!important;font-size:13px}nav.tabs a.nav-portfolio{padding:6px 14px!important}}
+.vid-head{margin-top:56px;max-width:980px}
+.vid-head h2{font-size:clamp(26px,3.6vw,42px)!important;line-height:1.08;letter-spacing:-.035em;font-weight:820;color:#fff;margin:14px 0 10px!important}
+.vid-head p{color:var(--muted);font-size:clamp(15px,1.7vw,18px);max-width:720px;margin:0}
+.vid-head+.hero-vid{margin-top:22px}
