@@ -48,3 +48,12 @@ footer.site a{color:var(--muted);text-decoration:none}footer.site a:hover{color:
 .hero-vid{margin-top:44px;border-radius:22px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px rgba(196,30,58,.55);background:#000;max-width:980px}
 .hero-vid video{display:block;width:100%;height:auto;aspect-ratio:16/9}
 .embedded nav.tabs,.embedded .hero,.embedded footer.site{display:none!important}.embedded .wrap{padding-top:16px!important}
+/* Portfolio nav button: looping LED strip-light border */
+@property --angle{syntax:"<angle>";initial-value:0deg;inherits:false}
+nav.tabs a.nav-portfolio{margin-left:auto;position:relative;isolation:isolate;color:#fff!important;font-weight:700;padding:8px 18px!important;border-radius:999px!important;border:2px solid transparent;white-space:nowrap;flex-shrink:0;
+background:linear-gradient(#0a1628,#0a1628) padding-box,conic-gradient(from var(--angle),#c41e3a,#ff4d66,#ffffff,#ff4d66,#c41e3a,#0a1628,#c41e3a) border-box!important;
+animation:ledspin 3s linear infinite,ledglow 2.4s ease-in-out infinite}
+nav.tabs a.nav-portfolio:hover{color:#fff!important;background:linear-gradient(#12233f,#12233f) padding-box,conic-gradient(from var(--angle),#c41e3a,#ff4d66,#ffffff,#ff4d66,#c41e3a,#0a1628,#c41e3a) border-box!important}
+@keyframes ledspin{to{--angle:360deg}}
+@keyframes ledglow{0%,100%{box-shadow:0 0 8px 1px rgba(196,30,58,.55),0 0 18px 2px rgba(255,77,102,.25)}50%{box-shadow:0 0 14px 3px rgba(255,77,102,.75),0 0 30px 6px rgba(196,30,58,.4)}}
+@media(prefers-reduced-motion:reduce){nav.tabs a.nav-portfolio{animation:none!important;box-shadow:0 0 12px 2px rgba(196,30,58,.6)}}
