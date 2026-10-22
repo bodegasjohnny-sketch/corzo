@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Call Log · Corzo voice agent</title>
+<style>
+:root{--bg:#0a1628;--surface:#12233f;--border:#1e3a5f;--text:#e8eef5;--muted:#8b9bb4;--accent:#c41e3a}
+nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}nav.tabs a{color:#e8eef5;text-decoration:none;padding:.4rem .7rem;border-radius:6px}nav.tabs a.active{background:#c41e3a;color:#fff;font-weight:700}
+.banner{max-width:1140px;margin:24px auto 0;padding:14px 20px;border-radius:14px;border:1px dashed rgba(196,30,58,.6);background:rgba(196,30,58,.08);color:#f4f6fa;font-size:15px}
+.grid{display:grid;grid-template-columns:minmax(300px,1fr) 1.6fr;gap:20px;align-items:start}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{text-align:left;width:100%;cursor:pointer;background:linear-gradient(160deg,#12233f,#0f1f38)!important;border:1px solid rgba(255,255,255,.09)!important;border-radius:16px!important;padding:14px 16px!important;color:#f4f6fa!important;box-shadow:none!important;font-weight:400!important}
+.item.sel{border-color:#c41e3a!important;box-shadow:0 0 0 1px #c41e3a!important}
+.item .who{font-weight:700;font-size:16px}.item .meta{color:var(--muted);font-size:13px;margin-top:4px}
+.badge{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:999px;vertical-align:middle;margin-left:6px}
+.b-qualified{color:#bbf7d0;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.35)}
+.b-needs_review{color:#fde68a;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.35)}
+.b-not_a_case{color:#cbd5e1;background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.35)}
+.b-sample{color:#fecaca;background:rgba(196,30,58,.15);border:1px solid rgba(196,30,58,.5)}
+dl.f{display:grid;grid-template-columns:170px 1fr;gap:6px 14px;margin:0}dl.f dt{color:var(--muted);font-size:13px}dl.f dd{margin:0}
+.tx{max-height:420px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.m{padding:8px 12px;border-radius:12px;max-width:85%;font-size:14.5px}.m.agent{background:#0f1f38;border:1px solid rgba(255,255,255,.08)}.m.user{background:#1e3a5f;margin-left:auto}
+.m small{display:block;color:var(--muted);font-size:11px}
+pre.h{white-space:pre-wrap;background:#081222;border-radius:12px;padding:14px;font-size:13.5px;border:1px solid rgba(255,255,255,.08)}
+.muted{color:var(--muted)}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/corzo.css">
+</head>
+<body>
+<nav class="tabs">
+  <span class="logo"><i></i><span>Corzo × Johnny Bodegas</span></span>
+  <a href="/">Chronology</a>
+  <a href="/live-upgrade/">Live Upgrade</a>
+  <a href="/overall-upgrade/">Overall Upgrade</a>
+  <a href="/calls/" class="active">Call Log</a>
+  <a href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener" style="color:#8b9bb4;margin-left:auto">Portfolio</a>
+</nav>
+<header class="hero"><div class="orb o1"></div><div class="orb o2"></div><div class="gridbg"></div><div class="in">
+  <span class="pill reveal"><b></b>Live demo · Voice agent call log</span>
+  <h1 class="reveal d1">Every call becomes a <span class="grad">clean intake handoff.</span></h1>
+  <p class="sub reveal d2">Calls to the voice agent on the Live Upgrade page are analyzed after hang-up: contact, incident, injuries, treatment, attorney status, urgency and a triage status, plus the full transcript. Nothing here is a case valuation; every call goes to a human for review.</p>
+  <div class="cta reveal d3"><a class="btn pri" href="/live-upgrade/#voice">Make a test call →</a><a class="btn" href="https://calendar.app.google/VPPcBakyackf3NNN9" target="_blank" rel="noopener">Book a call</a><a class="btn" href="mailto:info@johnnybodegas.com">Email me</a></div>
+</div></header>
+<div class="banner"><strong>Live demo.</strong> Calls made on this site appear here. Please use test details, not real personal info.</div>
+<div class="wrap">
+  <div class="eyebrow">Call log</div>
+  <p class="muted" id="state">Loading calls…</p>
+  <div class="grid">
+    <div class="list" id="list"></div>
+    <div id="detail"></div>
+  </div>
+</div>
+<footer class="site"><span>Johnny Bodegas · Applied AI demo for Chris Corzo Injury Attorneys</span><span><a href="https://calendar.app.google/VPPcBakyackf3NNN9" target="_blank" rel="noopener">Book a call</a> · <a href="mailto:info@johnnybodegas.com">info@johnnybodegas.com</a> · <a href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener">Portfolio</a></span></footer>
+<script>
+// Public, read-only: publishable key + RLS allow SELECT only. Phone numbers are masked server-side before storage.
+const SB="https://egidfikgecpbpdausrcr.supabase.co", KEY="sb_publishable_lFwjy5iuG41NV7t2A9VTHQ_l2ts9HNp";
+const LABEL={qualified:"Qualified",needs_review:"Needs review",not_a_case:"Not a case"};
+const FIELDS=[["caller_name","Caller"],["phone","Phone"],["incident_type","Incident type"],["incident_date","Incident date"],["injuries","Injuries"],["treatment_status","Treatment"],["has_attorney","Has attorney"],["urgency","Urgency"],["best_callback_time","Best callback"]];
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const nice=v=>v==null||v===""?"—":String(v).replace(/_/g," ");
+const fmt=(iso,tz)=>iso?new Date(iso).toLocaleString("en-US",{timeZone:tz,month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"—";
+const times=iso=>`${fmt(iso,"Asia/Manila")} Manila · ${fmt(iso,"America/Chicago")} Central`;
+const badge=c=>`<span class="badge b-${esc(c.status)}">${esc(LABEL[c.status]||c.status)}</span>${c.is_sample?'<span class="badge b-sample">Sample</span>':""}`;
+let calls=[],sel=null;
+function handoff(c){const f=c.fields||{};return [`CORZO INTAKE HANDOFF${c.is_sample?" (SAMPLE / fictional)":""}`,`Status: ${LABEL[c.status]||c.status}   Urgency: ${nice(f.urgency)}`,`Call: ${times(c.started_at)} (${c.duration?Math.round(c.duration/60*10)/10+" min":"—"})`,"",...FIELDS.map(([k,l])=>`${l}: ${nice(f[k])}`),"",`Summary: ${c.summary||"—"}`,"",`Next step: intake team calls back${f.best_callback_time?" ("+f.best_callback_time+")":""}; attorney review required. No valuation was given.`,`Ref: ${c.conversation_id}`].join("\n");}
+function show(id){sel=id;const c=calls.find(x=>x.conversation_id===id);document.querySelectorAll(".item").forEach(e=>e.classList.toggle("sel",e.dataset.id===id));if(!c)return;const f=c.fields||{};
+ const audio=c.has_audio&&!c.is_sample?`<div class="card"><div class="eyebrow">Recording</div><audio controls preload="none" style="width:100%" src="${SB}/functions/v1/corzo-sync?audio=${encodeURIComponent(c.conversation_id)}"></audio></div>`:"";
+ document.getElementById("detail").innerHTML=`<div class="card"><div class="eyebrow">Summary ${badge(c)}</div><p style="margin:0">${esc(c.summary||"—")}</p><p class="muted" style="font-size:13px;margin:.6rem 0 0">${esc(times(c.started_at))}${c.duration?" · "+Math.round(c.duration)+"s":""}</p></div>
+ <div class="card"><div class="eyebrow">Extracted fields</div><dl class="f">${FIELDS.map(([k,l])=>`<dt>${l}</dt><dd>${esc(nice(f[k]))}</dd>`).join("")}</dl></div>
+ <div class="card"><div class="eyebrow">Intake-team handoff</div><pre class="h" id="ho">${esc(handoff(c))}</pre><button id="copy">Copy handoff</button> <span class="muted" id="copied"></span></div>
+ ${audio}
+ <div class="card"><div class="eyebrow">Transcript</div><div class="tx">${(c.transcript||[]).map(m=>`<div class="m ${m.role==="user"?"user":"agent"}"><small>${m.role==="user"?"Caller":"Agent"}${m.t!=null?" · "+m.t+"s":""}</small>${esc(m.message)}</div>`).join("")||'<span class="muted">No transcript.</span>'}</div></div>`;
+ document.getElementById("copy").onclick=async()=>{const t=handoff(c);try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove()}document.getElementById("copied").textContent="Copied ✓";};}
+async function load(){const r=await fetch(`${SB}/rest/v1/corzo_calls?select=*&order=started_at.desc&limit=50`,{headers:{apikey:KEY}});calls=r.ok?await r.json():[];
+ document.getElementById("state").textContent=calls.length?`${calls.length} call${calls.length>1?"s":""}. Newest first. Click one for details.`:"No calls yet. Make a test call on the Live Upgrade page.";
+ document.getElementById("list").innerHTML=calls.map(c=>`<button class="item" data-id="${esc(c.conversation_id)}"><div class="who">${esc((c.fields||{}).caller_name||"Unknown caller")} ${badge(c)}</div><div class="meta">${esc(nice((c.fields||{}).incident_type))} · ${esc(times(c.started_at))}</div></button>`).join("");
+ document.querySelectorAll(".item").forEach(e=>e.onclick=()=>show(e.dataset.id));if(calls.length)show(sel&&calls.some(c=>c.conversation_id===sel)?sel:calls[0].conversation_id);}
+load();
+// Ask the server to pull any new calls from ElevenLabs (rate-limited server-side), then refresh.
+fetch(`${SB}/functions/v1/corzo-sync`,{method:"POST"}).then(r=>r.json()).then(j=>{if(j&&j.synced)load()}).catch(()=>{});
+setInterval(load,30000);
+</script>
+</body>
+</html>

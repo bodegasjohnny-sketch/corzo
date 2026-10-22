@@ -60,6 +60,7 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
   <a href="/">Chronology</a>
   <a href="/live-upgrade/" class="active">Live Upgrade</a>
   <a href="/overall-upgrade/">Overall Upgrade</a>
+  <a href="/calls/">Call Log</a>
   <a href="https://portfolio.johnnybodegas.com/" target="_blank" rel="noopener" style="color:#8b9bb4;margin-left:auto">Portfolio</a>
 </nav>
 <header class="hero"><div class="orb o1"></div><div class="orb o2"></div><div class="gridbg"></div><div class="in">
@@ -111,12 +112,13 @@ nav.tabs{background:#081222;border-bottom:1px solid #1e3a5f;padding:.6rem 1rem;d
     </div>
   </div>
 
-  <h2>2. Knowledge-Constrained Voice Agent</h2>
+  <h2 id="voice">2. Knowledge-Constrained Voice Agent</h2>
   <div class="card">
     <p>Voice agent that follows the firm SOP (name + phone first). Currently limited to public knowledge.</p>
     <div class="voice-box">
       <elevenlabs-convai agent-id="agent_8401m5bvzmy6escbffygpnekg7mt" action-text="Live voice agent for Corzo"></elevenlabs-convai>
     </div>
+    <p style="margin:.8rem 0 0"><a class="cta-btn secondary" href="/calls/">After your call, see it here →</a> <span style="color:var(--muted);font-size:.88rem">Please use test details, not real personal info.</span></p>
     <div class="disclaimer">
       <strong>Constraint layer:</strong> Agent is instructed to collect name and phone before accident details. It will not invent internal policies, case valuations, or firm-confidential rules. Full production version requires Corzo’s approved language, escalation paths, and "never say" list.
     </div>
